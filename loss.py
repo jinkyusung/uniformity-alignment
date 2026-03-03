@@ -10,8 +10,8 @@ def alignment_loss(x: Tensor, y: Tensor, alpha: float) -> Tensor:
     This measures how close the positive pairs are in the embedding space.
     
     Args:
-        x: First set of embeddings (shape: [N, D])
-        y: Second set of embeddings (shape: [N, D])
+        x: First set of embeddings (shape: [B, D])
+        y: Second set of embeddings (shape: [B, D])
         alpha: Exponent for the distance calculation
         
     Returns:
@@ -30,7 +30,7 @@ def uniformity_loss(x: Tensor, t: float) -> Tensor:
     using a Gaussian potential kernel.
     
     Args:
-        x: Set of embeddings (shape: [N, D])
+        x: Set of embeddings (shape: [B, D])
         t: Temperature parameter
         
     Returns:
@@ -51,21 +51,21 @@ def quadratic_wasserstein_loss(x: Tensor) -> Tensor:
     embeddings to encourage feature decorrelation and prevent dimensional collapse.
 
     Args:
-        x: Input embedding tensor (shape: [N, D])
-           N: Batch size, D: Dimension size
+        x: Input embedding tensor (shape: [B, D])
+           B: Batch size, D: Dimension size
 
     Returns:
         The calculated Wasserstein loss value (Scalar)
     """
-    N, D = x.shape
+    B, D = x.shape
     x = F.normalize(x, p=2, dim=1)
 
     mu = x.mean(dim=0)
     x_centered = x - mu
-    cov = (x_centered.T @ x_centered) / (N - 1)
-    # In original code, they use N instead of (N - 1).
-    # Waring: If we use small batch size (N), then its difference quite large.
-    # But theoretically, it should be (N - 1) for the unbiased estimated covariance.
+    cov = (x_centered.T @ x_centered) / (B - 1)
+    # In original code, they use B instead of (B - 1).
+    # Waring: If we use small batch size (B), then its difference quite large.
+    # But theoretically, it should be (B - 1) for the unbiased estimated covariance.
 
     trace_cov = cov.diagonal().sum()
     eigvals = torch.linalg.eigvalsh(cov)
