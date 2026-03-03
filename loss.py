@@ -73,5 +73,7 @@ def quadratic_wasserstein_loss(x: Tensor) -> Tensor:
     trace_sqrt_cov = eigvals.sqrt().sum()
 
     w2_sq = mu.norm().pow(2) + 1 + trace_cov - (2 / (D ** 0.5)) * trace_sqrt_cov
-
     return F.relu(w2_sq)
+    # In original code, they return torch.sqrt(w2_sq) (in fact, W_2). 
+    # But we use w2_sq (in fact, W_2^2) for the gradient stability.
+    # ReLU is also not in original, but we use to avoid negative values as a inevitable computational error of eigenvalsh.
