@@ -63,6 +63,9 @@ def quadratic_wasserstein_loss(x: Tensor) -> Tensor:
     mu = x.mean(dim=0)
     x_centered = x - mu
     cov = (x_centered.T @ x_centered) / (N - 1)
+    # In original code, they use N instead of (N - 1).
+    # Waring: If we use small batch size (N), then its difference quite large.
+    # But theoretically, it should be (N - 1) for the unbiased estimated covariance.
 
     trace_cov = cov.diagonal().sum()
     eigvals = torch.linalg.eigvalsh(cov)
