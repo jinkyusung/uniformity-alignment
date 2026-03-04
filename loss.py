@@ -42,10 +42,10 @@ def uniformity_loss(x: Tensor, t: float) -> Tensor:
 
 
 
-def quadratic_wasserstein_loss(x: Tensor) -> Tensor:
+def squared_wasserstein_loss(x: Tensor) -> Tensor:
     """
-    Computes the Quadratic Wasserstein Loss (approximated W2 distance) between
-    the empirical distribution of the embeddings and a target uniform distribution.
+    Computes the Squared Wasserstein Loss between the empirical distribution
+    of the embeddings and a target uniform distribution on a unit sphere manifold.
 
     This loss utilizes the statistical moments (mean and covariance) of the
     embeddings to encourage feature decorrelation and prevent dimensional collapse.
@@ -55,7 +55,7 @@ def quadratic_wasserstein_loss(x: Tensor) -> Tensor:
            B: Batch size, D: Dimension size
 
     Returns:
-        The calculated Wasserstein loss value (Scalar)
+        The calculated squared Wasserstein loss value (Scalar)
     """
     B, D = x.shape
     x = F.normalize(x, p=2, dim=1)
